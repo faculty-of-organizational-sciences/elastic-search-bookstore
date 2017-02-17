@@ -5,16 +5,6 @@
 	<artifactId>bookstore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<dependencies>
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>5.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.elasticsearch.client</groupId>
-			<artifactId>transport</artifactId>
-			<version>5.2.1</version>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
