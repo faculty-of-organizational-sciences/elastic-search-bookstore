@@ -2,8 +2,8 @@ package rs.ac.bg.fon.ai.bookstore.indexing;
 
 public enum IndexName {
 
-	BOOK_INDEX ("book"),
-	AUTHOR_INDEX ("author");
+	BOOK_INDEX ("book_index"),
+	AUTHOR_INDEX ("author_index");
 	
 	private String value;
 	
