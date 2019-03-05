@@ -1,0 +1,23 @@
+{
+	"properties": {
+		"title": {
+			"type": "text"
+		},
+		"isbn": {
+			"type": "text"
+		},
+		"year": {
+			"type": "integer"
+		},
+		"score": {
+			"type": "double"
+		},
+		"authors": {
+			"properties": {
+				"id": {
+					"type": "integer"
+				}
+			}
+		}
+	}
+}

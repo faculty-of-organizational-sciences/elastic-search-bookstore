@@ -1,22 +1,29 @@
 package rs.ac.bg.fon.ai.bookstore.domain;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class Book {
 
 	private long id;
 	private String title;
 	private int year;
 	private String isbn;
+	private double score;
 	
-	private Author author;
+	private List<Author> authors;
 	
-	public Book() { }
+	public Book() {
+		authors = new LinkedList<>();
+	}
 
-	public Book(long id, String title, int year, String isbn) {
-		super();
+	public Book(long id, String title, int year, String isbn, double score) {
+		this();
 		this.id = id;
 		this.title = title;
 		this.year = year;
 		this.isbn = isbn;
+		this.score = score;
 	}
 
 	public long getId() {
@@ -51,17 +58,29 @@ public class Book {
 		this.isbn = isbn;
 	}
 
-	public Author getAuthor() {
-		return author;
+	public double getScore() {
+		return score;
 	}
 
-	public void setAuthor(Author author) {
-		this.author = author;
+	public void setScore(double score) {
+		this.score = score;
+	}
+	
+	public List<Author> getAuthors() {
+		return authors;
+	}
+
+	public void setAuthors(List<Author> authors) {
+		this.authors = authors;
+	}
+	
+	public void addAuthor(Author author) {
+		authors.add(author);
 	}
 
 	@Override
 	public String toString() {
-		return "Book [id=" + id + ", title=" + title + ", year=" + year + ", isbn=" + isbn + ", author=" + author + "]";
+		return "Book [id=" + id + ", title=" + title + ", year=" + year + ", isbn=" + isbn + ", score=" + score + "]";
 	}
 	
 }

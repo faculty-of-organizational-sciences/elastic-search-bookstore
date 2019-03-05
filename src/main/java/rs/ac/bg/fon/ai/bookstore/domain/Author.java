@@ -8,17 +8,19 @@ public class Author {
 	private long id;
 	private String name;
 	private String lastname;
+	private String gender;
 	private List<Book> books;
 
 	public Author() {
 		books = new ArrayList<Book>();
 	}
 
-	public Author(long id, String name, String lastname) {
-		books = new ArrayList<Book>();
+	public Author(long id, String name, String lastname, String gender) {
+		this();
 		this.id = id;
 		this.name = name;
 		this.lastname = lastname;
+		this.gender = gender;
 	}
 
 	public long getId() {
@@ -57,9 +59,18 @@ public class Author {
 		this.books.add(book);
 	}
 
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
 	@Override
 	public String toString() {
-		return "Author [id=" + id + ", name=" + name + ", lastname=" + lastname + "]";
+		return "Author [id=" + id + ", name=" + name + ", lastname=" + lastname + ", gender=" + gender + ", books="
+				+ books + "]";
 	}
-	
+
 }

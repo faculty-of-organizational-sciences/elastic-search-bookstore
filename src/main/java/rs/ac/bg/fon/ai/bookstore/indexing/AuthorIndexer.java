@@ -3,18 +3,22 @@ package rs.ac.bg.fon.ai.bookstore.indexing;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
 import rs.ac.bg.fon.ai.bookstore.domain.Author;
-import rs.ac.bg.fon.ai.bookstore.domain.Book;
+import rs.ac.bg.fon.ai.bookstore.indexing.administration.ESIndex;
+import rs.ac.bg.fon.ai.bookstore.indexing.administration.ElasticClient;
 
 public class AuthorIndexer {
 	
+	private static final Logger logger = LogManager.getLogger(AuthorIndexer.class);
+	
 	public void indexAuthors(List<Author> authors) {
-		System.out.println("Indexing authors");
+		logger.debug("Indexing authors");
 		
 		for (Author author : authors) {
 			indexAuthor(author);
@@ -22,7 +26,7 @@ public class AuthorIndexer {
 	}
 
 	public void indexAuthor(Author author) {
-		System.out.println("Indexing author " + author);
+		logger.debug("Indexing author " + author);
 		
 		try {
 			XContentBuilder builder = XContentFactory.jsonBuilder();
@@ -31,31 +35,20 @@ public class AuthorIndexer {
 			
 			builder.field("name", author.getName() != null ? author.getName() : "" );
 			builder.field("lastname", author.getLastname() != null ? author.getLastname() : "" );
-			
-			// index author books
-			List<Book> books = author.getBooks();
-			
-			builder.startArray("books");
-			
-			for (Book book : books) {
-				builder.startObject();
-				builder.field("title", book.getTitle() != null ? book.getTitle() : "" );
-				builder.endObject();
-			}
-			builder.endArray();
+			builder.field("gender", author.getGender() != null ? author.getGender() : "" );
             
             builder.endObject();
 			
 			@SuppressWarnings("unused")
-			IndexResponse response = ElasticClient.getInstance().getClient().prepareIndex(IndexName.AUTHOR_INDEX.value(), IndexType.AUTHOR.name(), String.valueOf(author.getId()))
-			        .setSource(builder)
-			        .get();
+			IndexResponse response = ElasticClient.getInstance().getClient()
+				.prepareIndex(
+						ESIndex.AUTHOR.name().toLowerCase(), 
+						ESIndex.AUTHOR.getIndexName(), 
+						String.valueOf(author.getId()))
+		        .setSource(builder)
+		        .get();
 		} catch (IOException e) {
-			System.err.println(e);
+			logger.error("Error", e);
 		}
-	}
-	
-	public void deleteAuthorIndexes(){
-		ElasticClient.getInstance().getClient().admin().indices().delete(Requests.deleteIndexRequest(IndexName.AUTHOR_INDEX.name()));
 	}
 }

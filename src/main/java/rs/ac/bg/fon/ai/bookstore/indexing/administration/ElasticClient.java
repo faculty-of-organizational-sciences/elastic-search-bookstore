@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.ai.bookstore.indexing;
+package rs.ac.bg.fon.ai.bookstore.indexing.administration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -6,14 +6,15 @@ import java.net.UnknownHostException;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 public class ElasticClient {
-	
+
 	private static ElasticClient INSTANCE = null;
 
 	private Client client;
-	
+
 	private final String clusterName = "elasticsearch";
 	private final String ipAddress = "127.0.0.1";
 	private final int port = 9300;
@@ -26,24 +27,20 @@ public class ElasticClient {
 	}
 
 	private ElasticClient() {
-		Settings settings = Settings.settingsBuilder()
-				.put("cluster.name", clusterName)
-				.build();
-		
-		TransportClient transportClient = TransportClient.builder().settings(settings).build();
-		
+
+		Settings settings = Settings.builder().put("cluster.name", clusterName).build();
+
 		try {
-			transportClient = transportClient
-					.addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(ipAddress), port));
+			TransportClient transportClient = new PreBuiltTransportClient(settings);
+			transportClient.addTransportAddress(new TransportAddress(InetAddress.getByName(ipAddress), port));
+			client = transportClient;
 		} catch (UnknownHostException e) {
 			return;
 		}
-		
-		client = transportClient;
 	}
 
 	public Client getClient() {
 		return client;
 	}
-
+	
 }
