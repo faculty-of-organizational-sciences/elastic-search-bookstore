@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.ai.bookstore.indexing.administration;
+package rs.ac.bg.fon.ai.books.indexing;
 
 public enum ESIndex {
 

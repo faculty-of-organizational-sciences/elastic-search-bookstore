@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.ai.bookstore.domain;
+package rs.ac.bg.fon.ai.books.domain;
 
 import java.util.ArrayList;
 import java.util.List;

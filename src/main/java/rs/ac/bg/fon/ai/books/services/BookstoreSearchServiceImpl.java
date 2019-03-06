@@ -1,6 +1,6 @@
-package rs.ac.bg.fon.ai.bookstore.services.search;
+package rs.ac.bg.fon.ai.books.services;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.elasticsearch.action.search.SearchResponse;
@@ -11,17 +11,34 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.sort.SortOrder;
 
-import rs.ac.bg.fon.ai.bookstore.indexing.administration.ESIndex;
-import rs.ac.bg.fon.ai.bookstore.indexing.administration.ElasticClient;
+import rs.ac.bg.fon.ai.books.indexing.ESIndex;
+import rs.ac.bg.fon.ai.elasticsearch.ElasticClient;
 
-public class BookstoreSearchService {
-
-	/**
-	 * Retrieves all books published in a provided year.
-	 * 
-	 * @param year
-	 * @return book ids
+public class BookstoreSearchServiceImpl implements BookstoreSearchService {
+	
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveAllBooks()
 	 */
+	@Override
+	public List<Long> retrieveAllBooks() {
+		SearchResponse searchResponse = ElasticClient.getInstance().getClient()
+				.prepareSearch(ESIndex.BOOK.name().toLowerCase())	// multiple indexes can be listed here
+				.setTypes(ESIndex.BOOK.getIndexName())	// multiple types can be listed here
+				.execute().actionGet();
+		
+		List<Long> ids = new LinkedList<>();
+		
+		for (SearchHit hit : searchResponse.getHits()) {
+			ids.add(Long.parseLong(hit.getId()));
+		}
+
+		return ids;
+	}
+
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveBooksFromYear(long)
+	 */
+	@Override
 	public List<Long> retrieveBooksFromYear(long year) {
 		QueryBuilder qb = QueryBuilders.termQuery("year", year);
 		
@@ -31,7 +48,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -40,12 +57,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Retrieves all books published in a provided year or before.
-	 * 
-	 * @param year
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveBooksFromYearAndBefore(long)
 	 */
+	@Override
 	public List<Long> retrieveBooksFromYearAndBefore(long year) {
 		QueryBuilder qb = QueryBuilders.rangeQuery("year")
 				.lte(year);
@@ -56,7 +71,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)			
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -65,12 +80,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Retrieves all books published in a provided year or before sorted.
-	 * 
-	 * @param year
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveBooksFromYearAndBeforeSorted(long)
 	 */
+	@Override
 	public List<Long> retrieveBooksFromYearAndBeforeSorted(long year) {
 		QueryBuilder qb = QueryBuilders.rangeQuery("year")
 				.lte(year);
@@ -82,7 +95,7 @@ public class BookstoreSearchService {
 				.addSort("score", SortOrder.DESC)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -91,14 +104,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Retrieves all books published in a provided year or before paginated.
-	 * 
-	 * @param year
-	 * @param limit
-	 * @param page
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveBooksFromYearAndBeforeWithPagination(long, int, int)
 	 */
+	@Override
 	public List<Long> retrieveBooksFromYearAndBeforeWithPagination(long year, int limit, int page) {
 		int offset = (page - 1) * limit;
 		
@@ -113,7 +122,7 @@ public class BookstoreSearchService {
 				.setSize(limit)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -122,11 +131,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Retrieves all male authors.
-	 * 
-	 * @return author ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#retrieveMaleAuthors()
 	 */
+	@Override
 	public List<Long> retrieveMaleAuthors() {
 		QueryBuilder qb = QueryBuilders.matchQuery("gender", "MALE");
 		
@@ -136,7 +144,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -145,12 +153,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 
-	/**
-	 * Searching for books having any of the provided words from the query parameter in their title.
-	 * 
-	 * @param query
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#searchBooksHavingAnyWordInTitle(java.lang.String)
 	 */
+	@Override
 	public List<Long> searchBooksHavingAnyWordInTitle(String query) {
 		QueryBuilder qb = QueryBuilders.queryStringQuery(query)
 				.defaultField("title");
@@ -161,7 +167,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -170,12 +176,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Searching for books having all of the provided words from the query parameter in their title.
-	 * 
-	 * @param query
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#searchBooksHavingAllWordsInTitle(java.lang.String)
 	 */
+	@Override
 	public List<Long> searchBooksHavingAllWordsInTitle(String query) {
 		QueryBuilder qb = QueryBuilders.queryStringQuery(query)
 				.defaultField("title")
@@ -187,7 +191,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -196,12 +200,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Searching for books having query string in their title.
-	 * 
-	 * @param query
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#searchBooks(java.lang.String)
 	 */
+	@Override
 	public List<Long> searchBooks(String query) {
 		QueryBuilder qb = QueryBuilders.queryStringQuery(query + "*")
 				.defaultField("title")
@@ -213,7 +215,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -222,12 +224,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 	
-	/**
-	 * Fuzzy search books by title
-	 * 
-	 * @param query
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#fuzzySearchBooks(java.lang.String)
 	 */
+	@Override
 	public List<Long> fuzzySearchBooks(String query) {
 		QueryBuilder qb = QueryBuilders.fuzzyQuery("title", query);
 		
@@ -237,7 +237,7 @@ public class BookstoreSearchService {
 				.setQuery(qb)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));
@@ -246,13 +246,10 @@ public class BookstoreSearchService {
 		return ids;
 	}
 
-	/**
-	 * Searches within all books of a given author.
-	 * 
-	 * @param authorId author whose books to search for
-	 * @param query
-	 * @return book ids
+	/* (non-Javadoc)
+	 * @see rs.ac.bg.fon.ai.bookstore.services.search.BookstoreSearchService#searchForBooksOfAuthor(long, java.lang.String)
 	 */
+	@Override
 	public List<Long> searchForBooksOfAuthor(long authorId, String query) {
 		BoolQueryBuilder booleanQuery = QueryBuilders.boolQuery();
 		
@@ -271,7 +268,7 @@ public class BookstoreSearchService {
 				.setQuery(booleanQuery)
 				.execute().actionGet();
 		
-		List<Long> ids = new ArrayList<Long>();
+		List<Long> ids = new LinkedList<>();
 		
 		for (SearchHit hit : searchResponse.getHits()) {
 			ids.add(Long.parseLong(hit.getId()));

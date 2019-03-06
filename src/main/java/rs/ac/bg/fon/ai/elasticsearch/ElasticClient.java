@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.ai.bookstore.indexing.administration;
+package rs.ac.bg.fon.ai.elasticsearch;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

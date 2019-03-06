@@ -1,4 +1,4 @@
-package rs.ac.bg.fon.ai.bookstore.indexing;
+package rs.ac.bg.fon.ai.books.indexing;
 
 import java.io.IOException;
 import java.util.List;
@@ -9,9 +9,8 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import rs.ac.bg.fon.ai.bookstore.domain.Author;
-import rs.ac.bg.fon.ai.bookstore.indexing.administration.ESIndex;
-import rs.ac.bg.fon.ai.bookstore.indexing.administration.ElasticClient;
+import rs.ac.bg.fon.ai.books.domain.Author;
+import rs.ac.bg.fon.ai.elasticsearch.ElasticClient;
 
 public class AuthorIndexer {
 	
