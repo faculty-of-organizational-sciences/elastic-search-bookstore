@@ -27,27 +27,6 @@ public class AuthorIndexer {
 	public void indexAuthor(Author author) {
 		logger.debug("Indexing author " + author);
 		
-		try {
-			XContentBuilder builder = XContentFactory.jsonBuilder();
-			
-			builder.startObject();
-			
-			builder.field("name", author.getName() != null ? author.getName() : "" );
-			builder.field("lastname", author.getLastname() != null ? author.getLastname() : "" );
-			builder.field("gender", author.getGender() != null ? author.getGender() : "" );
-            
-            builder.endObject();
-			
-			@SuppressWarnings("unused")
-			IndexResponse response = ElasticClient.getInstance().getClient()
-				.prepareIndex(
-						ESIndex.AUTHOR.name().toLowerCase(), 
-						ESIndex.AUTHOR.getIndexName(), 
-						String.valueOf(author.getId()))
-		        .setSource(builder)
-		        .get();
-		} catch (IOException e) {
-			logger.error("Error", e);
-		}
+		
 	}
 }

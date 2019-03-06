@@ -24,19 +24,7 @@ public class ElasticsearchAdministration {
 		
 		Client client = ElasticClient.getInstance().getClient();
 		
-		boolean exists = client.admin().indices().prepareExists(indexName)
-				.execute().actionGet().isExists();
-
-		if (!exists) {
-			client.admin().indices().prepareCreate(indexName).get();
-			
-			AcknowledgedResponse response = client.admin().indices().preparePutMapping(indexName.toLowerCase())   
-		        .setType(indexName)                                
-		        .setSource(mappings, XContentType.JSON)
-		        .get();
-			
-			return response.isAcknowledged();
-		}
+		
 		return false;
 	}
 
@@ -44,9 +32,9 @@ public class ElasticsearchAdministration {
 		try {
 			Client client = ElasticClient.getInstance().getClient();
 		
-			AcknowledgedResponse response = client.admin().indices().delete(new DeleteIndexRequest(indices)).actionGet();
 			
-			return response.isAcknowledged();
+			
+			return false;
 		} catch (IndexNotFoundException e) {
 			logger.error("Index does not exist so it can't be deleted", e);
 			return false;
