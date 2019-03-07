@@ -21,17 +21,17 @@ public class Main {
 	private static final Logger logger = LogManager.getLogger(Main.class);
 
 	public static void main(String[] args) {
-		BookstoreIndexAdministration esAdmin = new BookstoreIndexAdministration();
-		esAdmin.deleteAllIndices();
-		esAdmin.createAllIndices();
+//		BookstoreIndexAdministration esAdmin = new BookstoreIndexAdministration();
+//		esAdmin.deleteAllIndices();
+//		esAdmin.createAllIndices();
 		
 		BookstorePersistance persistance = new ListBasedBookstorePersistance();
 		
-		BookIndexer bIndexer = new BookIndexer();
-		bIndexer.indexBooks(persistance.loadAllBooks());
-		
-		AuthorIndexer aIndexer = new AuthorIndexer();
-		aIndexer.indexAuthors(persistance.loadAllAuthors());
+//		BookIndexer bIndexer = new BookIndexer();
+//		bIndexer.indexBooks(persistance.loadAllBooks());
+//		
+//		AuthorIndexer aIndexer = new AuthorIndexer();
+//		aIndexer.indexAuthors(persistance.loadAllAuthors());
 		
 		BookstoreSearchService searchService = new BookstoreSearchServiceImpl();
 		

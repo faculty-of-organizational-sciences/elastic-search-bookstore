@@ -2,7 +2,7 @@ package rs.ac.bg.fon.ai.books.indexing;
 
 public enum ESIndex {
 
-	BOOK ("novel"),
+	BOOK ("book"),
 	AUTHOR ("author");
 	
 	private String indexName;

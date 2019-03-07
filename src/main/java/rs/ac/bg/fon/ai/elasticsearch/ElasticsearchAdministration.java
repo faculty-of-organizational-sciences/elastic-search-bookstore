@@ -31,7 +31,7 @@ public class ElasticsearchAdministration {
 			client.admin().indices().prepareCreate(indexName).get();
 			
 			AcknowledgedResponse response = client.admin().indices().preparePutMapping(indexName.toLowerCase())   
-		        .setType(indexName)                                
+		        .setType(indexName)	// we use the same
 		        .setSource(mappings, XContentType.JSON)
 		        .get();
 			
